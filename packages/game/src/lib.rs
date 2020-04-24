@@ -1,24 +1,93 @@
 use wasm_bindgen::prelude::*;
 
-// Called when the wasm module is instantiated
-#[wasm_bindgen(start)]
-pub fn main() -> Result<(), JsValue> {
-    // Use `web_sys`'s global `window` function to get a handle on the global
-    // window object.
-    let window = web_sys::window().expect("no global `window` exists");
-    let document = window.document().expect("should have a document on window");
-    let body = document.body().expect("document should have a body");
-
-    // Manufacture the element we're gonna append
-    let val = document.create_element("p")?;
-    val.set_inner_html("Hello from Rust!");
-
-    body.append_child(&val)?;
-
-    Ok(())
+#[wasm_bindgen]
+#[repr(u8)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Piece {
+    Empty = 0,
+    Red = 1,
+    Black = 2,
 }
 
 #[wasm_bindgen]
-pub fn add(a: u32, b: u32) -> u32 {
-    a + b
+pub struct Game {
+    board: Vec<Piece>,
+}
+
+#[wasm_bindgen]
+impl Game {
+    pub fn new() -> Game {
+        let board = vec![
+            Piece::Empty,
+            Piece::Red,
+            Piece::Empty,
+            Piece::Red,
+            Piece::Empty,
+            Piece::Red,
+            Piece::Empty,
+            Piece::Red,
+            Piece::Red,
+            Piece::Empty,
+            Piece::Red,
+            Piece::Empty,
+            Piece::Red,
+            Piece::Empty,
+            Piece::Red,
+            Piece::Empty,
+            Piece::Empty,
+            Piece::Red,
+            Piece::Empty,
+            Piece::Red,
+            Piece::Empty,
+            Piece::Red,
+            Piece::Empty,
+            Piece::Red,
+            Piece::Empty,
+            Piece::Empty,
+            Piece::Empty,
+            Piece::Empty,
+            Piece::Empty,
+            Piece::Empty,
+            Piece::Empty,
+            Piece::Empty,
+            Piece::Empty,
+            Piece::Empty,
+            Piece::Empty,
+            Piece::Empty,
+            Piece::Empty,
+            Piece::Empty,
+            Piece::Empty,
+            Piece::Empty,
+            Piece::Black,
+            Piece::Empty,
+            Piece::Black,
+            Piece::Empty,
+            Piece::Black,
+            Piece::Empty,
+            Piece::Black,
+            Piece::Empty,
+            Piece::Empty,
+            Piece::Black,
+            Piece::Empty,
+            Piece::Black,
+            Piece::Empty,
+            Piece::Black,
+            Piece::Empty,
+            Piece::Black,
+            Piece::Black,
+            Piece::Empty,
+            Piece::Black,
+            Piece::Empty,
+            Piece::Black,
+            Piece::Empty,
+            Piece::Black,
+            Piece::Empty,
+        ];
+
+        Game { board }
+    }
+
+    pub fn board(&self) -> *const Piece {
+        self.board.as_ptr()
+    }
 }

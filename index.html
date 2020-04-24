@@ -13,15 +13,27 @@
         padding: 0;
       }
       
-      tr:nth-of-type(odd) td:nth-of-type(odd){
+      tr:nth-of-type(odd) td:nth-of-type(even){
         background-color: black;
       }
       
-      tr:nth-of-type(even) td:nth-of-type(even){
+      tr:nth-of-type(even) td:nth-of-type(odd){
         background-color: black;
       }
+      
+      tr:nth-of-type(9) td, td:nth-of-type(1){
+        background-color: white !important;
+        border: none;
+        text-align: right;
+        width: fit-content;
+      }
+      
+      tr:nth-of-type(9) td{
+        vertical-align: top;
+        text-align: center;
+      }
 
-      .piece {
+      div{
         width: 90%;
         height: 90%;
         margin: 0 auto;
@@ -31,15 +43,6 @@
         transition: box-shadow 0.5s;
         position:relative;
       }
-
-			.red {
-    		visibility: visible;
-    		background-color: rgb(179,0,0);
-			}
-
-			.black {
-    		visibility: visible;
-			}
       
       div:hover{
         cursor: pointer;
@@ -87,17 +90,17 @@
         // Also note that the promise, when resolved, yields the wasm module's
         // exports which is the same as importing the `*_bg` module in other
         // modes
-        const wasm = await init();
-				const game = Game.new();
-				const boardPtr = game.board();
-  			const board = new Uint8Array(wasm.memory.buffer, boardPtr, 64);
-				console.log(board)
-				const app = Elm.Main.init({
-					node: document.getElementById("elm-app"),
-					flags: Array.from(board)
+        await init();
+				var app = Elm.Main.init({
+					node: document.getElementById("elm-app")
 				});
+				app.ports.add.subscribe(function(message) {
+					 app.ports.addResult.send(add(message.first, message.second));
+				});
+
+				console.log(Game.new())
       }
-		
+
       run();
     </script>
   </body>

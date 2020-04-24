@@ -1,4 +1,4 @@
-port module Main exposing (..)
+module Main exposing (..)
 
 -- Press buttons to increment and decrement a counter.
 --
@@ -7,15 +7,16 @@ port module Main exposing (..)
 --
 
 import Browser
-import Html exposing (Html, button, div, input, text)
-import Html.Attributes exposing (value)
-import Html.Events exposing (onClick, onInput)
+import Html exposing (Html, div, table, tr, td, text)
+import Html.Attributes exposing (classList)
+import List exposing (map)
+import List.Split exposing (chunksOfLeft)
 
 
 -- MAIN
 
 
-main : Program () Model Msg
+main : Program (List Int) Model Msg
 main =
     Browser.element
         { init = init
@@ -26,38 +27,16 @@ main =
 
 
 
--- PORTS
-
-
-port add : AddCommand -> Cmd msg
-
-
-port addResult : (Int -> msg) -> Sub msg
-
-
-
 -- MODEL
 
 
 type alias Model =
-    { total : Int
-    , firstAddend : Int
-    , secondAddend : Int
-    }
+    { board : List Int }
 
 
-type alias AddCommand =
-    { first : Int
-    , second : Int
-    }
-
-
-init : () -> ( Model, Cmd Msg )
-init flags =
-    ( { total = 0
-      , firstAddend = 0
-      , secondAddend = 0
-      }
+init : List Int -> ( Model, Cmd Msg )
+init initialBoard =
+    ( { board = initialBoard }
     , Cmd.none
     )
 
@@ -67,44 +46,42 @@ init flags =
 
 
 type Msg
-    = UpdateFirstAddend String
-    | UpdateSecondAddend String
-    | Add
-    | AddResult Int
+    = NoOp
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        UpdateFirstAddend val ->
-            case String.toInt val of
-                Nothing ->
-                    ( model, Cmd.none )
+    ( model, Cmd.none )
 
-                Just i ->
-                    ( { model | firstAddend = i }
-                    , Cmd.none
-                    )
 
-        UpdateSecondAddend val ->
-            case String.toInt val of
-                Nothing ->
-                    ( model, Cmd.none )
 
-                Just i ->
-                    ( { model | secondAddend = i }
-                    , Cmd.none
-                    )
+-- VIEW
 
-        Add ->
-            ( model
-            , add { first = model.firstAddend, second = model.secondAddend }
+
+boardRow : List Int -> Html Msg
+boardRow row =
+    tr []
+        (List.map
+            (\x ->
+                td []
+                    [ div
+                        [ classList
+                            [ ( "piece", True )
+                            , ( "red", x == 1 )
+                            , ( "black", x == 2 )
+                            ]
+                        ]
+                        []
+                    ]
             )
+            row
+        )
 
-        AddResult total ->
-            ( { model | total = total }
-            , Cmd.none
-            )
+
+view : Model -> Html Msg
+view model =
+    table []
+        (List.map boardRow (chunksOfLeft 8 model.board))
 
 
 
@@ -113,19 +90,4 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    addResult AddResult
-
-
-
--- VIEW
-
-
-view : Model -> Html Msg
-view model =
-    div []
-        [ input [ value (String.fromInt model.firstAddend), onInput UpdateFirstAddend ] []
-        , div [] [ text "+" ]
-        , input [ value (String.fromInt model.secondAddend), onInput UpdateSecondAddend ] []
-        , button [ onClick Add ] [ text "=" ]
-        , div [] [ text (String.fromInt model.total) ]
-        ]
+    Sub.none
