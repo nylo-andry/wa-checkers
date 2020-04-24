@@ -1,0 +1,36 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "description": "Web UI for checkers.",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "webpack-dev-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nylo-andry/wa-checkers.git"
+  },
+  "keywords": [
+    "checkers",
+    "web",
+    "elm",
+    "webpack"
+  ],
+  "author": "Ny Fanilo Andrianjafy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nylo-andry/wa-checkers/issues"
+  },
+  "homepage": "https://github.com/nylo-andry/wa-checkers#readme",
+  "devDependencies": {
+    "copy-webpack-plugin": "^5.1.1",
+    "elm-webpack-loader": "^6.0.1",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "dependencies": {
+    "game": "file:../game/pkg"
+  }
+}

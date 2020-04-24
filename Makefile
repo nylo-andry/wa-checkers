@@ -1,11 +1,12 @@
 build-game: packages/game/Cargo.toml
 	cd packages/game && \
-		wasm-pack build --target web
+		wasm-pack build
 
-build-web:
+build-web: build-game
 		cd packages/web && \
-		elm make src/Main.elm --output dist/elm.js
+		npm run build
 
-start-web: build-game build-web
-		docker build -t wa-checkers . && \
-		docker run --rm --name wa-checkers -p 3000:80 wa-checkers
+start-web: build-game
+	cd packages/web && \
+	npm install && \
+	npm start
